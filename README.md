@@ -24,7 +24,24 @@ echo Circle::PI; // Output: 3.14159
 
 ### Autoloading Classes
 
-Assuming autoloading is set up properly
+Many developers writing object-oriented applications create one PHP source file per class definition. One of the biggest annoyances is having to write a long list of needed includes at the beginning of each script (one for each class).
+
+The **spl_autoload_register()** function registers any number of autoloaders, enabling for classes and interfaces to be automatically loaded if they are currently not defined. By registering autoloaders, PHP is given a last chance to load the class or interface before it fails with an error.
+
+Any class-like construct may be autoloaded the same way. That includes classes, interfaces, traits, and enumerations.
+
+This example attempts to load the classes **MyClass1** and **MyClass2** from the files **MyClass1.php** and **MyClass2.php** respectively.
+
+```php
+spl_autoload_register(function ($class_name) {
+  include $class_name . '.php';
+});
+
+$obj  = new MyClass1();
+$obj2 = new MyClass2();
+```
+
+**Note**: **spl_autoload_register()** may be called multiple times in order to register multiple autoloaders. Throwing an exception from an autoload function, however, will interrupt that process and not allow further autoload functions to run. For that reason, throwing exceptions from an autoload function is strongly discouraged.
 
 ### Constructors and Destructors
 
@@ -296,28 +313,40 @@ echo $example->property; // Output: Hello, world!
 
 ### Object Iteration
 
+Object iteration in PHP refers to the process of traversing and accessing the properties and values of an object. When iterating over an object, you can access its properties and perform operations on them.
+
+In the example below, we have a "**Person**" class with three properties: "**name**", "**age**", and "**gender**". We create a new instance of the Person class and assign values to its properties. Then, we use a "**foreach**" loop to iterate over the object "**\$person**". During each iteration, the "**\$property**" variable will hold the name of the property, and the $value variable will hold the corresponding value. We can then perform any desired operations or display the property and its value.
+
+Please note that in order to iterate over an object using "**foreach**", the object must implement the "**Traversable**" interface or have properties accessible from outside the class scope.
+
 ```php
-class Playlist implements IteratorAggregate {
-  private $songs = [];
+class Person {
+  public $name;
+  public $age;
+  public $gender;
 
-  public function __construct($songs) {
-    $this->songs = $songs;
-  }
-
-  public function getIterator() {
-    return new ArrayIterator($this->songs);
+  public function __construct($name, $age, $gender) {
+    $this->name = $name;
+    $this->age = $age;
+    $this->gender = $gender;
   }
 }
 
-$songs = ['Song 1', 'Song 2', 'Song 3'];
-$playlist = new Playlist($songs);
+$person = new Person('John Doe', 30, 'Male');
 
-foreach ($playlist as $song) {
-  echo $song . "\n";
+foreach ($person as $property => $value) {
+  echo "$property: $value\n";
 }
 ```
 
 ### Magic Methods
+
+Magic methods in PHP are special methods that provide functionality to classes and objects that goes beyond regular method definitions. These methods are automatically invoked by PHP in response to certain events or actions. They are prefixed with a double underscore ( \_ \_ ) to indicate their special nature.
+
+Here are some magic methods in PHP:
+
+- **\_\_construct()**: This is the constructor method that is automatically called when a new instance of a class is created. It allows you to initialize the object and perform any necessary setup.
+- **\_\_toString()**: This method is called when an object is treated as a string, such as when using echo or print on the object. It allows you to define how the object should be represented as a string.
 
 ```php
 class Person {
@@ -338,53 +367,151 @@ echo $person; // Output: John Doe
 
 ### Final Keyword
 
+In PHP, the "**final**" keyword is used to indicate that _a class, method, or property cannot be overridden or extended by subclasses_. When a class or method is declared as final, it means that it cannot be further subclassed or overridden.
+
+Here's how the "**final**" keyword can be used:
+
+1. **Final Class**: When a class is declared as "\*\*final\*\*", it cannot be extended by any other class. This means that it cannot be used as a parent class, and no subclasses can be created for it.
+
 ```php
 final class FinalClass {
-  // Class definition
+  // Class implementation
 }
 ```
+
+2. **Final Method**: When a method is declared as final within a class, it cannot be overridden by any subclass. This ensures that the behavior of the method remains unchanged throughout the inheritance hierarchy.
+
+```php
+class ParentClass {
+  final public function finalMethod() {
+    // Method implementation
+  }
+}
+
+class ChildClass extends ParentClass {
+  // Error: Cannot override final method
+}
+```
+
+3. **Final Property**: The final keyword is not applicable to properties directly. However, it can indirectly affect properties when used in conjunction with a final class. Since a final class cannot be extended, its properties are also not subject to further modification or extension.
+
+```php
+final class FinalClass {
+  public $finalProperty;
+}
+
+class ChildClass extends FinalClass {
+  // Error: Cannot extend final class
+}
+```
+
+By using the final keyword appropriately, you can enforce restrictions on class inheritance, method overriding, and property modification, ensuring the stability and integrity of your code.
 
 ### Object Cloning
 
-```php
-class Car {
-  public $brand;
+Object cloning in PHP allows you to create a duplicate or clone of an existing object. When an object is cloned, a new instance is created with the same properties and values as the original object. However, they are separate instances in memory, and modifications to one object do not affect the other.
 
-  public function __construct($brand) {
-    $this->brand = $brand;
+To clone an object in PHP, you can use the "**clone**" keyword followed by the object you want to clone. The process of cloning involves two steps:
+
+1. **Shallow Copy**:
+
+- By default, object cloning in PHP performs a shallow copy. It means that the properties of the cloned object are copied by value, but if the properties are references to other objects, the references themselves are copied, not the referenced objects.
+- This means that changes made to the referenced objects within the cloned object will also affect the original object and vice versa, as they both point to the same object.
+
+```php
+class MyClass {
+  public $property;
+}
+
+$obj1 = new MyClass();
+$obj1->property = 'Value';
+
+$obj2 = clone $obj1;
+
+$obj2->property = 'New Value';
+
+var_dump($obj1->property);  // Output: string(4) "Value"
+var_dump($obj2->property);  // Output: string(9) "New Value"
+```
+
+2. **Deep Copy**:
+
+- If you want to create an independent clone of an object, including all referenced objects, you need to implement the \_\_clone() magic method within the class.
+- In the \_\_clone() method, you can explicitly clone any referenced objects and assign them to the corresponding properties of the cloned object.
+
+```php
+class MyClass {
+  public $property;
+
+  public function __clone() {
+    $this->property = clone $this->property;
   }
 }
 
-$car1 = new Car('Toyota');
-$car2 = clone $car1;
-$car2->brand = 'Honda';
+$obj1 = new MyClass();
+$obj1->property = new AnotherClass();
 
-echo $car1->brand; // Output: Toyota
-echo $car2->brand; // Output: Honda
+$obj2 = clone $obj1;
+
+$obj2->property->value = 'New Value';
+
+var_dump($obj1->property->value);  // Output: NULL
+var_dump($obj2->property->value);  // Output: string(9) "New Value"
 ```
+
+**Note**: It's important to note that cloning an object can have performance implications, especially when dealing with complex objects or large data structures. Therefore, it's recommended to use object cloning judiciously and consider the potential impact on memory usage and performance.
 
 ### Comparing Objects
 
-```php
-class Fruit {
-  public $name;
+When comparing objects in PHP, there are two types of comparison to consider: identity comparison and value comparison.
 
-  public function __construct($name) {
-    $this->name = $name;
+1. **Identity Comparison**:
+
+- Identity Comparison is performed using the === operator, which checks if two objects refer to the exact same instance. It compares the memory address of the objects rather than their contents.
+- Two objects are considered identical (===) if they are references to the same instance in memory.
+
+```php
+$obj1 = new MyClass();
+$obj2 = $obj1;
+
+var_dump($obj1 === $obj2);  // Output: bool(true)
+```
+
+2. **Value Comparison**:
+
+- Value comparison involves comparing the properties and values of two objects to determine if they are considered equal based on the specific criteria defined in the code.
+- Value comparison typically involves comparing individual properties or using custom comparison logic implemented in methods within the class.
+
+```php
+class MyClass {
+  private $property;
+
+  public function __construct($property) {
+    $this->property = $property;
+  }
+
+  public function isEqual(MyClass $other) {
+    return $this->property === $other->property;
   }
 }
 
-$apple1 = new Fruit('Apple');
-$apple2 = new Fruit('Apple');
+$obj1 = new MyClass('value');
+$obj2 = new MyClass('value');
 
-if ($apple1 != $apple2) {
-  return "Not Equal"; // Output: Not Equal
-}
-
-return "Equal";
+var_dump($obj1->isEqual($obj2));  // Output: bool(true)
 ```
 
+It's important to note that by default, PHP's built-in comparison operators (== and !=) perform the identity comparison for objects. To perform a value comparison, you need to implement custom comparison logic within the class by overriding methods such as \_\_toString(), \_\_equals(), or defining your own comparison methods.
+
+Keep in mind that object comparison depends on the specific implementation and comparison criteria defined within the class, so the behavior may vary depending on how the class is designed.
+
 ### Late Static Bindings
+
+Late static binding is a feature in PHP that allows a static method in a class to reference the class that it is called from, rather than the class in which it is defined. It enables you to achieve polymorphic behavior when calling static methods.
+
+In PHP, normally, when a static method is called within a class hierarchy, the method is resolved based on the class where it is defined, not the class from which it is called. This behavior is known as early binding. However, with late static binding, you can override this behavior and bind the static method at runtime.
+
+To use late static binding, you need to use the static keyword instead of the class name within the static method. This allows the method to be dynamically resolved based on the calling class. Late static binding enables you to access static properties and methods of the class that called the method.
 
 ```php
 class ParentClass {
@@ -400,7 +527,27 @@ class ChildClass extends ParentClass {
 ChildClass::whoAmI(); // Output: ChildClass
 ```
 
-### Objects and references
+In the example above, "**ParentClass**" defines a static method "**whoAmI()**", which uses "**static::class**" to print the name of the calling class. When "**whoAmI()**" is called from "**ChildClass**" late static binding is applied, and **"ChildClass**" is printed.
+
+Late static binding is particularly useful when implementing static methods in abstract classes or when working with class inheritance, allowing child classes to override static methods and still reference their own class context.
+
+### Objects and References
+
+Objects and references are closely related concepts that play a significant role in how data is stored and accessed.
+
+1. **Objects**:
+
+- Objects are instances of classes, representing a specific entity or concept in your application.
+- Each object has its own set of properties (variables) and methods (functions) defined by its class.
+- Objects store their data internally and can hold complex data structures.
+- When you assign an object to a variable or pass it as a parameter, the variable holds a reference to the object, rather than the actual object data.
+
+2. **References**:
+
+- References allow multiple variables to refer to the same underlying data.
+- When you assign an object to a variable or pass it as a function argument, you are creating a reference to that object.
+- Changes made to the object through one reference will be reflected in other references to the same object.
+- References are particularly useful when working with large objects to avoid unnecessary memory duplication.
 
 ```php
 $person1 = new Person('John');
@@ -413,6 +560,19 @@ echo $person2->name; // Output: Jane
 ```
 
 ### Object Serialization
+
+Object serialization in PHP refers to the process of converting an object into a format that can be stored or transmitted, and later reconstructed back into an object. Serialization allows objects to be saved persistently or sent across different systems or platforms.
+
+Serialization is useful in various scenarios, such as:
+
+1. **Storing Objects**: You can serialize an object and save it to a file or a database. Later, you can retrieve the serialized data and unserialize it to recreate the original object.
+2. **Interprocess Communication**: Objects can be serialized and sent over a network or between different processes to exchange data or state information.
+3. **Caching**: Serialized objects can be cached in memory or on disk for faster retrieval, reducing the need to recreate the object from scratch.
+
+PHP provides built-in functions for object serialization:
+
+- **serialize()**: This function converts an object into a string representation (serialization). It traverses the object's properties and converts them into a serialized format.
+- **unserialize()** This function recreates an object from its serialized string representation. It reconstructs the object's properties and their values.
 
 ```php
 class User {
@@ -435,6 +595,20 @@ echo $deserialized->name; // Output: John Doe
 ```
 
 ### Covariance and Contravariance
+
+Covariance and contravariance are concepts related to the type compatibility of objects or functions when dealing with inheritance or type hierarchies. They describe how the type relationships between different objects or functions can be preserved or modified in relation to their parameter types and return types.
+
+1. **Covariance**:
+
+- Covariance allows a method in a derived class to have a return type that is more specific than the return type of the same method in the base class. In other words, it allows a method to return a subtype of the original return type.
+
+In the example, the **play()** method in the **PetDog** class is an example of covariance. It is implementing the **play()** method from the **Pet** interface, which is more specific than the **eat()** method from the **Animal** interface. The **play()** method returns a more specific result related to playing, which is allowed in covariance.
+
+2. **Contravariance**:
+
+- Contravariance allows a method in a derived class to accept parameters of a type that is less specific than the parameter type of the same method in the base class. In other words, it allows a method to accept a supertype of the original parameter type.
+
+In the example, there is no explicit use of contravariance. However, if we had a method in the **Pet** interface that accepts an **Animal** parameter, and the **PetDog** class implemented that method by accepting a **Dog** parameter (which is a subtype of **Animal**), it would be an example of contravariance.
 
 ```php
 interface Animal {
@@ -461,3 +635,5 @@ $dog = new PetDog();
 $dog->eat(); // Output: Dog is eating.
 $dog->play(); // Output: Dog is playing.
 ```
+
+To summarize, covariance allows a more specific return type in a derived class, while contravariance allows a less specific parameter type in a derived class. These concepts help ensure type compatibility and flexibility in object-oriented programming languages.
