@@ -1,3 +1,7 @@
+## PHP Classes and Objects
+
+---
+
 ### Properties
 
 Properties in a class are member variables that can be defined with various modifiers such as visibility (**public**, **protected**, **private**), the **static** keyword, or as **readonly** in PHP 8.1.0. In PHP 7.4 and later versions, properties can also have a type declaration, such as **string**, **integer**, or an **object**. They can be initialized with a constant value, but this initialization is optional.
@@ -637,3 +641,100 @@ $dog->play(); // Output: Dog is playing.
 ```
 
 To summarize, covariance allows a more specific return type in a derived class, while contravariance allows a less specific parameter type in a derived class. These concepts help ensure type compatibility and flexibility in object-oriented programming languages.
+
+---
+
+## PHP OOP Advance Concepts
+
+---
+
+### Dependency Injection
+
+Dependency injection is a concept in PHP where the dependencies of a class are provided from the outside rather than being created internally within the class. This allows for better flexibility, testability, and decoupling of components.
+
+By using dependency injection, the code becomes more modular and easier to test. It also promotes the **Single Responsibility Principle (SRP)** by ensuring that each class has a single responsibility and relies on external dependencies for other tasks.
+
+In the example below, the **User** class **depends** on the **Logger** class for logging purposes. Instead of creating an instance of the **Logger** class within the **User** class, the dependency is injected through the constructor of the **User** class. This allows for better flexibility, as different implementations of the **Logger** class can be easily substituted.
+
+```php
+class Logger {
+  public function log() {
+    echo "[Logger Class] logging activities...";
+  }
+}
+
+class User {
+  private $logger;
+
+  public function __construct(Logger $logger) {
+    $this->logger = $logger;
+  }
+
+  public function searchById($username) {
+    echo "[User Class] searchById logic";
+
+    $this->logger->log();
+  }
+}
+
+/* Output:
+[User Class] searchById logic.
+[Logger Class] Logging activities...
+*/
+```
+
+### Repository Pattern
+
+The repository pattern is a **software design pattern** that separates the **data access logic** from the **business logic** in an application. It provides an abstraction layer between the application and the underlying data source (such as a database), allowing for decoupling and easier maintenance.
+
+In the given example, the repository pattern is implemented for the User entity. Here's an explanation of each component:
+
+1. **UserInterface**: This is an interface that defines the contract for interacting with user data. It specifies two methods: **getAllUsers()** and **deleteUser(int $id)**. Any class that implements this interface must provide the implementation for these methods.
+
+```php
+# UserInterface.php
+interface UserInterface {
+  public function getAllUsers() : array;
+  public function deleteUser(int $id): void;
+}
+```
+
+2. **UserRepository**: This class implements the **UserInterface** and serves as the concrete implementation of the **data access logic** for the User entity. In this example, the user data is stored in an array. The **getAllUsers()** method returns all the users, and the **deleteUser(int $id)** method handles the deletion of a user.
+
+```php
+# UserRepository.php
+
+class UserRepository implements UserInterface {
+  private $users = ['Jane', 'John', 'Goku', 'Vegeta'];
+
+  public function getAllUsers() : array {
+    return $this->users;
+  }
+
+  public function deleteUser(int $id) {
+    // delete user logic
+  }
+}
+```
+
+3. **UserService**: This class represents the **business logic layer**. It depends on the **UserInterface** (in this case, the **UserRepository**) through **dependency injection**. The constructor injection allows the **UserService** to work with any implementation of the **UserInterface**. It provides a method **getAllUsers()** that delegates the call to the repository to fetch all users.
+
+```php
+# UserService.php
+
+class UserService {
+  private $userRepository;
+
+  public function __construct(UserInterface $userRepo) {
+    $this->userRepository = $userRepo;
+  }
+
+  public function getAllUsers() : array {
+    return $this->userRepository->getAllUsers();
+  }
+}
+
+$userRepository = new UserRepository();
+$userService = new UserService($userRepository);
+print_r($userService->getAllUsers());
+```
