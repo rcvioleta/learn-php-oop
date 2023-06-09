@@ -1,7 +1,5 @@
 ## PHP Classes and Objects
 
----
-
 ### Properties
 
 Properties in a class are member variables that can be defined with various modifiers such as visibility (**public**, **protected**, **private**), the **static** keyword, or as **readonly** in PHP 8.1.0. In PHP 7.4 and later versions, properties can also have a type declaration, such as **string**, **integer**, or an **object**. They can be initialized with a constant value, but this initialization is optional.
@@ -642,11 +640,7 @@ $dog->play(); // Output: Dog is playing.
 
 To summarize, covariance allows a more specific return type in a derived class, while contravariance allows a less specific parameter type in a derived class. These concepts help ensure type compatibility and flexibility in object-oriented programming languages.
 
----
-
 ## PHP OOP Advance Concepts
-
----
 
 ### Dependency Injection
 
