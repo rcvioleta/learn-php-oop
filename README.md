@@ -732,3 +732,257 @@ $userRepository = new UserRepository();
 $userService = new UserService($userRepository);
 print_r($userService->getAllUsers());
 ```
+
+## S.O.L.I.D principle
+
+1. [Single-responsibility principle](./README.md/#solid-1)
+2. [Open-closed principle](./README.md/#solid-2)
+3. [Liskov substitution principle](./README.md/#solid-3)
+4. [Interface segregation principle](./README.md/#solid-4)
+5. [Dependency inversion principle](./README.md/#solid-5)
+
+### <span id="solid-1">Single responsibility principle</span>
+
+In this example, there are two classes, **UserManager** and **UserNotifier**, each representing a separate responsibility.
+
+The **UserManager** class handles operations related to user management, such as creating a new user, deleting a user, and updating user information. It encapsulates the logic for user-related operations, ensuring that each method focuses on a single responsibility related to user management.
+
+The **UserNotifier** class, on the other hand, is responsible for sending notifications to users. It contains methods for sending welcome emails and password reset links. By separating the notification logic into its own class, we adhere to the SRP, as the class has a single responsibility of handling user notifications.
+
+```php
+class UserManager
+{
+  public function createUser($userData)
+  {
+    // Validation and creation logic for a new user
+  }
+
+  public function deleteUser($userId)
+  {
+    // Deletion logic for a user
+  }
+
+  public function updateUser($userId, $userData)
+  {
+    // Update logic for a user
+  }
+}
+
+class UserNotifier
+{
+  public function sendWelcomeEmail($userEmail)
+  {
+    // Sending welcome email to a user
+  }
+
+  public function sendPasswordResetLink($userEmail)
+  {
+    // Sending password reset link to a user
+  }
+}
+```
+
+By keeping each class focused on a specific responsibility, the code becomes more modular, maintainable, and easier to understand and test. Applying the **Single Responsibility Principle** helps prevent a class from becoming bloated with unrelated responsibilities and reduces the impact of changes in one area on other parts of the codebase.
+
+### <span id="solid-2">Open-closed principle</span>
+
+The **Open-Closed Principle (OCP)** states that software entities (classes, modules, functions, etc.) should be **open for extension** but **closed for modification**. In other words, you should be able to extend the behavior of a system without modifying its existing code.
+
+Here's an example in PHP that demonstrates the **Open-Closed Principle**:
+
+```php
+interface Shape
+{
+  public function area();
+}
+
+class Rectangle implements Shape
+{
+  public function __construct(private int $width, private int $height)
+  {
+    // Constructor property promotion 😃
+  }
+
+  public function area()
+  {
+    return $this->width * $this->height;
+  }
+}
+
+class Circle implements Shape
+{
+  public function __construct(private int $radius)
+  {
+    // Constructor property promotion 😃
+  }
+
+  public function area()
+  {
+    return pi() * $this->radius * $this->radius;
+  }
+}
+```
+
+In this example, the **Shape** interface defines a contract that specifies the "**area()**" method. The **Rectangle** and **Circle** classes implement the **Shape** interface and provide their **own implementations** of the "**area()**" method.
+
+The key aspect of the **Open-Closed Principle** is that you can introduce new shapes (such as a triangle or square) by creating new classes that implement the **Shape** interface without modifying the existing **Rectangle** and **Circle** classes. This allows the system to be easily extended to support new shapes without altering the code that depends on the existing shapes.
+
+By adhering to the **Open-Closed Principle**, you achieve code that is more robust, maintainable, and flexible. It promotes code reuse and allows for easier extension of the system's functionality without the risk of introducing bugs or breaking existing code.
+
+### <span id="solid-3">Liskov substitution principle</span>
+
+The **Liskov Substitution Principle (LSP)** states that objects of a superclass should be replaceable with objects of its subclasses without affecting the correctness of the program. In other words, if S is a subtype of T, then objects of type T can be replaced with objects of type S without causing any errors or violating the expected behavior of the program.
+
+Here's an example in PHP that demonstrates the **Liskov Substitution Principle**:
+
+```php
+class Vehicle
+{
+  public function startEngine()
+  {
+    // Start the engine
+  }
+
+  public function accelerate()
+  {
+    // Accelerate the vehicle
+  }
+}
+
+class Car extends Vehicle
+{
+  public function startEngine()
+  {
+    // Start the car's engine
+  }
+
+  public function accelerate()
+  {
+    // Accelerate the car
+  }
+
+  public function openTrunk()
+  {
+    // Open the car's trunk
+  }
+}
+
+class Motorcycle extends Vehicle
+{
+  public function startEngine()
+  {
+    // Start the motorcycle's engine
+  }
+
+  public function accelerate()
+  {
+    // Accelerate the motorcycle
+  }
+
+  public function tilt()
+  {
+  // Tilt the motorcycle
+  }
+}
+```
+
+In this example, we have a **Vehicle** superclass and two subclasses: **Car** and **Motorcycle**. Both subclasses inherit from the **Vehicle** class and provide their own implementations of the **startEngine()** and **accelerate()** methods. The **Car** class also introduces a new method, **openTrunk()**, while the **Motorcycle** class introduces a new method, **tilt()**.
+
+The **Liskov Substitution Principle** ensures that you can use objects of the **Car** and **Motorcycle** classes interchangeably with objects of the **Vehicle** class without causing any issues. For example, if you have a method that expects a **Vehicle** object, you can safely pass a **Car** or **Motorcycle** object to that method without violating the expected behavior of the program.
+
+Adhering to the **Liskov Substitution Principle** promotes code reusability, modularity, and polymorphism. It allows for more flexible and extensible code, as new subclasses can be introduced without affecting the existing code that depends on the superclass.
+
+### <span id="solid-4">Interface segregation principle</span>
+
+Imagine you have an interface called "**ElectronicDevice**" that represents different electronic devices. The interface has methods like **turnOn()**, **turnOff()**, **playSound()**, and **displayContent()**. However, not all electronic devices can perform all of these actions. Some devices, like a **TV**, can turn on and off, play sound, and display content. Other devices, like a speaker, can only play sound.
+
+According to the **Interface Segregation Principle (ISP)**, it's better to have smaller and more focused interfaces instead of one large interface that encompasses all possible actions. So, we can split the **ElectronicDevice** interface into smaller, more specific interfaces:
+
+```php
+interface PowerSwitchable {
+  public function turnOn();
+  public function turnOff();
+}
+
+interface SoundPlayable {
+  public function playSound();
+}
+
+interface ContentDisplayable {
+  public function displayContent();
+}
+```
+
+Now, we can have classes that implement only the interfaces they need:
+
+```php
+class TV implements PowerSwitchable, SoundPlayable, ContentDisplayable {
+  // Implement methods for turning on, turning off, playing sound, and displaying content
+}
+
+class Speaker implements SoundPlayable {
+  // Implement method for playing sound
+}
+```
+
+In this example, the **TV** class implements all three interfaces because it can perform all the related actions. On the other hand, the **Speaker** class only implements the **SoundPlayable** interface since it's not concerned with turning on/off or displaying content.
+
+By following the **Interface Segregation Principle**, we create interfaces that are focused on specific behaviors, allowing classes to implement only the interfaces relevant to them. This promotes code flexibility, modularity, and avoids forcing classes to implement unnecessary methods. It also helps to prevent code bloat and reduces the impact of changes in one part of the system on unrelated parts.
+
+### <span id="solid-5">Dependency inversion principle</span>
+
+Suppose we have a **MusicPlayer** class that needs to play music. Initially, the **MusicPlayer** class directly depends on a concrete implementation of the **Mp3Player** class, like this:
+
+```php
+class MusicPlayer {
+  public function __construct(private Mp3Player $mp3Player) {
+    // Constructor property promotion 😀
+  }
+
+  public function playMusic() {
+    $this->mp3Player->play();
+  }
+}
+
+class Mp3Player {
+  public function play() {
+    // Logic for playing music in an MP3 player
+  }
+}
+```
+
+However, this implementation violates the **Dependency Inversion Principle** because the **MusicPlayer** class is tightly coupled to the specific implementation of the **Mp3Player**. If we decide to change the music player implementation to a different type, such as a **SpotifyPlayer**, we would need to modify the **MusicPlayer** class, which can lead to code fragility and dependencies on concrete implementations.
+
+To adhere to the **Dependency Inversion Principle**, we can introduce an abstraction in the form of an interface or an abstract class that both the **MusicPlayer** and the different player implementations can depend on:
+
+```php
+interface MusicPlayerInterface {
+  public function play();
+}
+
+class MusicPlayer {
+  public function __construct(private MusicPlayerInterface $player) {
+    // Constructor property promotion 😀
+  }
+
+  public function playMusic() {
+    $this->player->play();
+  }
+}
+
+class Mp3Player implements MusicPlayerInterface {
+  public function play() {
+    // Logic for playing music in an MP3 player
+  }
+}
+
+class SpotifyPlayer implements MusicPlayerInterface {
+  public function play() {
+    // Logic for playing music in a Spotify player
+  }
+}
+```
+
+Now, the **MusicPlayer** class depends on the **MusicPlayerInterface** abstraction instead of a specific implementation. We can inject different player implementations, such as **Mp3Player** or **SpotifyPlayer**, into the **MusicPlayer** class, allowing for more flexibility and extensibility.
+
+By applying the **Dependency Inversion Principle**, we invert the dependencies, rely on abstractions, and decouple the high-level **MusicPlayer** class from the low-level implementations. This promotes modularity, reusability, and makes it easier to introduce new player implementations or swap existing ones without modifying the core **MusicPlayer** class.
