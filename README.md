@@ -1,6 +1,41 @@
-## PHP Classes and Objects
+## Table of Contents
 
-### Properties
+- [PHP Classes and Objects](./README.md/#php-classes-and-objects)
+  - [Properties](./README.md/#oop-properties)
+  - [Class Constants](./README.md/#oop-class-constants)
+  - [Autoloading Classes](./README.md/#oop-autoloading-classes)
+  - [Constructors and Destructors](./README.md/#oop-constructors-and-destructors)
+  - [Visibility](./README.md/#oop-visibility)
+  - [Object Inheritance](./README.md/#oop-object-inheritance)
+  - [Scope Resolution Operator \(::\)](./README.md/#oop-scope-resolution-operator)
+  - [Static Keyword](./README.md/#oop-static-keyword)
+  - [Class Abstraction](./README.md/#oop-class-abstraction)
+  - [Object Interfaces](./README.md/#oop-object-interfaces)
+  - [Traits](./README.md/#oop-traits)
+  - [Anonymous classes](./README.md/#oop-anonymous-classes)
+  - [Overloading](./README.md/#oop-overloading)
+  - [Object Iteration](./README.md/#oop-object-iteration)
+  - [Magic Methods](./README.md/#oop-magic-methods)
+  - [Final Keyword](./README.md/#oop-final-keyword)
+  - [Object Cloning](./README.md/#oop-object-cloning)
+  - [Comparing Objects](./README.md/#oop-comparing-objects)
+  - [Late Static Bindings](./README.md/#oop-late-static-bindings)
+  - [Objects and references](./README.md/#oop-objects-and-references)
+  - [Object Serialization](./README.md/#oop-object-serialization)
+  - [Covariance and Contravariance](./README.md/#oop-covariance-and-contravariance)
+- [PHP OOP Advance Concepts](./README.md/#oop-advance-concepts)
+  - [Dependency Injection](./README.md/#oop-advance-dependency-injection)
+  - [Repository Pattern](./README.md/#oop-advance-repository-pattern)
+- [S.O.L.I.D Principles](./README.md/#solid-principles)
+  - [Single-responsibility principle](./README.md/#solid-1)
+  - [Open-closed principle](./README.md/#solid-2)
+  - [Liskov substitution principle](./README.md/#solid-3)
+  - [Interface segregation principle](./README.md/#solid-4)
+  - [Dependency inversion principle](./README.md/#solid-5)
+
+## <span id="php-classes-and-objects">PHP Classes and Objects</span>
+
+### <span id="oop-properties">Properties</span>
 
 Properties in a class are member variables that can be defined with various modifiers such as visibility (**public**, **protected**, **private**), the **static** keyword, or as **readonly** in PHP 8.1.0. In PHP 7.4 and later versions, properties can also have a type declaration, such as **string**, **integer**, or an **object**. They can be initialized with a constant value, but this initialization is optional.
 
@@ -12,7 +47,7 @@ class Person {
 }
 ```
 
-### Class Constants
+### <span id="oop-class-constants">Class Constants</span>
 
 Class constants in PHP are values associated with a class that remain constant. They are declared using the const keyword and cannot be changed once defined. Class constants provide a way to define meaningful, fixed values throughout the code and are accessed using the **"::"** operator. They are inherited by subclasses and offer a convenient way to use constant values in a class.
 
@@ -24,7 +59,7 @@ class Circle {
 echo Circle::PI; // Output: 3.14159
 ```
 
-### Autoloading Classes
+### <span id="oop-autoloading">Autoloading Classes</span>
 
 Many developers writing object-oriented applications create one PHP source file per class definition. One of the biggest annoyances is having to write a long list of needed includes at the beginning of each script (one for each class).
 
@@ -45,7 +80,7 @@ $obj2 = new MyClass2();
 
 **Note**: **spl_autoload_register()** may be called multiple times in order to register multiple autoloaders. Throwing an exception from an autoload function, however, will interrupt that process and not allow further autoload functions to run. For that reason, throwing exceptions from an autoload function is strongly discouraged.
 
-### Constructors and Destructors
+### <span id="oop-constructors-and-destructors">Constructors and Destructors</span>
 
 Constructors and destructors are special methods in PHP classes that are used for initializing and cleaning up objects, respectively.
 
@@ -71,7 +106,7 @@ $book = new Book(); // Output: Book object created.
 unset($book); // Output: Book object destroyed.
 ```
 
-### Visibility
+### <span id="oop-visibility">Visibility</span>
 
 Visibility defines the accessibility of class properties and methods from different parts of the code. There are three levels of visibility:
 
@@ -102,7 +137,7 @@ $animal = new Animal('Lion', 5, 'Mammal');
 echo $animal->getType(); // Output: Mammal
 ```
 
-### Object Inheritance
+### <span id="oop-inheritance">Object Inheritance</span>
 
 In PHP, object inheritance allows you to create new classes (child classes) based on existing classes (parent classes). To establish inheritance in PHP, you can use the "**extends**" keyword followed by the name of the parent class when defining a child class. The child class can then add its own properties and methods or override the ones inherited from the parent class to tailor its behavior. This promotes hierarchical relationships, code organization, and the ability to specialize or modify behavior in child classes.
 
@@ -132,7 +167,7 @@ $circle = new Circle('Red', 5);
 echo $circle->getArea(); // Output: 78.53975
 ```
 
-### Scope Resolution Operator "::"
+### <span id="oop-scope-resolution-operator">Scope Resolution Operator "::"</span>
 
 The Scope Resolution Operator "**::**" is used to access **static methods**, **static properties**, and **constants** within a class. It allows you to refer to the class itself rather than an instance of the class. This operator helps differentiate between static and non-static elements of a class and provides a way to invoke or access them without needing an object instance.
 
@@ -146,7 +181,7 @@ class MathUtils {
 echo MathUtils::square(3); // Output: 9
 ```
 
-### Static Keyword
+### <span id="oop-static-keyword">Static Keyword</span>
 
 The "**static**" keyword is used to declare class members (properties and methods) that belong to the class itself rather than instances of the class. When a member is declared as static, it can be accessed directly through the class name, **without creating an object instance**. Static members are shared among all instances of the class and can be accessed and modified globally within the program. They are useful for creating utility functions, maintaining global state, and organizing code that doesn't require object-specific data.
 
@@ -164,7 +199,7 @@ $counter2 = new Counter();
 echo Counter::$count; // Output: 2
 ```
 
-### Class Abstraction
+### <span id="oop-class-abstraction">Class Abstraction</span>
 
 Class abstraction in PHP refers to the concept of creating abstract classes. An abstract class **serves as a blueprint** for other classes and **cannot be instantiated itself**. It defines common properties and methods that subclasses can inherit and implement.
 
@@ -187,7 +222,7 @@ $dog = new Dog();
 $dog->makeSound(); // Output: Woof!
 ```
 
-### Object Interfaces
+### <span id="oop-object-interfaces">Object Interfaces</span>
 
 Object interfaces in PHP define a contract or set of rules that a class must follow. An interface defines the method signatures (name, parameters, and return types) that implementing classes must adhere to.
 
@@ -212,7 +247,7 @@ $fileLogger = new FileLogger();
 $fileLogger->log("Error occurred."); // Output: Logging message to file: Error occurred.
 ```
 
-### Traits
+### <span id="oop-traits">Traits</span>
 
 Traits are a mechanism for **code reuse** that allows you to define reusable sets of methods that can be used by multiple classes. A trait **encapsulates** a set of methods that can be included in a class, providing additional functionality without requiring inheritance.
 
@@ -242,7 +277,7 @@ $product = new Product(100);
 echo $product->applyDiscount($product->price); // Output: 80
 ```
 
-### Anonymous classes
+### <span id="oop-anonymous-classes">Anonymous classes</span>
 
 Anonymous classes are classes that are defined without a named identifier. They are **created dynamically at runtime** and are useful when you need to create a simple class that is used only once and doesn't require a specific name.
 
@@ -268,7 +303,7 @@ $greeting = new class implements Greeting {
 $greeting->greet(); // Output: Hello!
 ```
 
-### Overloading
+### <span id="oop-overloading">Overloading</span>
 
 In PHP, overloading refers to the ability to dynamically "**overload**" methods or properties in a class. It allows a class to define multiple methods or properties with the same name but different parameters or behaviors. There are two types of overloading in PHP:
 
@@ -313,7 +348,7 @@ $example->property = "Hello, world!";
 echo $example->property; // Output: Hello, world!
 ```
 
-### Object Iteration
+### <span id="oop-object-iteration">Object Iteration</span>
 
 Object iteration in PHP refers to the process of traversing and accessing the properties and values of an object. When iterating over an object, you can access its properties and perform operations on them.
 
@@ -341,7 +376,7 @@ foreach ($person as $property => $value) {
 }
 ```
 
-### Magic Methods
+### <span id="oop-magic-methods">Magic Methods</span>
 
 Magic methods in PHP are special methods that provide functionality to classes and objects that goes beyond regular method definitions. These methods are automatically invoked by PHP in response to certain events or actions. They are prefixed with a double underscore ( \_ \_ ) to indicate their special nature.
 
@@ -367,7 +402,7 @@ $person = new Person('John Doe');
 echo $person; // Output: John Doe
 ```
 
-### Final Keyword
+### <span id="oop-final-keyword">Final Keyword</span>
 
 In PHP, the "**final**" keyword is used to indicate that _a class, method, or property cannot be overridden or extended by subclasses_. When a class or method is declared as final, it means that it cannot be further subclassed or overridden.
 
@@ -409,7 +444,7 @@ class ChildClass extends FinalClass {
 
 By using the final keyword appropriately, you can enforce restrictions on class inheritance, method overriding, and property modification, ensuring the stability and integrity of your code.
 
-### Object Cloning
+### <span id="oop-object-cloning">Object Cloning</span>
 
 Object cloning in PHP allows you to create a duplicate or clone of an existing object. When an object is cloned, a new instance is created with the same properties and values as the original object. However, they are separate instances in memory, and modifications to one object do not affect the other.
 
@@ -463,7 +498,7 @@ var_dump($obj2->property->value);  // Output: string(9) "New Value"
 
 **Note**: It's important to note that cloning an object can have performance implications, especially when dealing with complex objects or large data structures. Therefore, it's recommended to use object cloning judiciously and consider the potential impact on memory usage and performance.
 
-### Comparing Objects
+### <span id="oop-comparing-objects">Comparing Objects</span>
 
 When comparing objects in PHP, there are two types of comparison to consider: identity comparison and value comparison.
 
@@ -507,7 +542,7 @@ It's important to note that by default, PHP's built-in comparison operators (== 
 
 Keep in mind that object comparison depends on the specific implementation and comparison criteria defined within the class, so the behavior may vary depending on how the class is designed.
 
-### Late Static Bindings
+### <span id="oop-late-static-bindings">Late Static Bindings</span>
 
 Late static binding is a feature in PHP that allows a static method in a class to reference the class that it is called from, rather than the class in which it is defined. It enables you to achieve polymorphic behavior when calling static methods.
 
@@ -533,7 +568,7 @@ In the example above, "**ParentClass**" defines a static method "**whoAmI()**", 
 
 Late static binding is particularly useful when implementing static methods in abstract classes or when working with class inheritance, allowing child classes to override static methods and still reference their own class context.
 
-### Objects and References
+### <span id="oop-objects-and-references">Objects and References</span>
 
 Objects and references are closely related concepts that play a significant role in how data is stored and accessed.
 
@@ -561,7 +596,7 @@ echo $person1->name; // Output: Jane
 echo $person2->name; // Output: Jane
 ```
 
-### Object Serialization
+### <span id="oop-object-serialization">Object Serialization</span>
 
 Object serialization in PHP refers to the process of converting an object into a format that can be stored or transmitted, and later reconstructed back into an object. Serialization allows objects to be saved persistently or sent across different systems or platforms.
 
@@ -596,7 +631,7 @@ $deserialized = unserialize($serialized);
 echo $deserialized->name; // Output: John Doe
 ```
 
-### Covariance and Contravariance
+### <span id="oop-covariance-and-contravariance">Covariance and Contravariance</span>
 
 Covariance and contravariance are concepts related to the type compatibility of objects or functions when dealing with inheritance or type hierarchies. They describe how the type relationships between different objects or functions can be preserved or modified in relation to their parameter types and return types.
 
@@ -640,9 +675,9 @@ $dog->play(); // Output: Dog is playing.
 
 To summarize, covariance allows a more specific return type in a derived class, while contravariance allows a less specific parameter type in a derived class. These concepts help ensure type compatibility and flexibility in object-oriented programming languages.
 
-## PHP OOP Advance Concepts
+## <span id="oop-advance-concepts">PHP OOP Advance Concepts</span>
 
-### Dependency Injection
+### <span id="oop-advance-dependency-injection">Dependency Injection</span>
 
 Dependency injection is a concept in PHP where the dependencies of a class are provided from the outside rather than being created internally within the class. This allows for better flexibility, testability, and decoupling of components.
 
@@ -677,7 +712,7 @@ class User {
 */
 ```
 
-### Repository Pattern
+### <span id="oop-advance-repository-pattern">Repository Pattern</span>
 
 The repository pattern is a **software design pattern** that separates the **data access logic** from the **business logic** in an application. It provides an abstraction layer between the application and the underlying data source (such as a database), allowing for decoupling and easier maintenance.
 
@@ -733,13 +768,7 @@ $userService = new UserService($userRepository);
 print_r($userService->getAllUsers());
 ```
 
-## S.O.L.I.D principle
-
-1. [Single-responsibility principle](./README.md/#solid-1)
-2. [Open-closed principle](./README.md/#solid-2)
-3. [Liskov substitution principle](./README.md/#solid-3)
-4. [Interface segregation principle](./README.md/#solid-4)
-5. [Dependency inversion principle](./README.md/#solid-5)
+## <span id="#solid-principles">S.O.L.I.D principles</span>
 
 ### <span id="solid-1">Single responsibility principle</span>
 
